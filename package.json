@@ -1,0 +1,27 @@
+{
+  "name": "twitch-extension-demo",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "^4.16.3",
+    "express-async-errors": "^3.0.0",
+    "fast-safe-stringify": "^2.0.6",
+    "jsonwebtoken": "^8.3.0",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "serve-favicon": "~2.4.5",
+    "socket.io": "^2.1.1",
+    "winston": "^3.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1"
+  }
+}
