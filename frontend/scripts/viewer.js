@@ -1,4 +1,4 @@
-
+/* eslint-disable no-console */
 
 // Get the party started
 $(function() {
@@ -70,7 +70,10 @@ $(function() {
         // console.log("The extension clientId is", auth.clientId);
         console.log("My Twitch opaque user id is", auth.userId);
         // console.log("The JWT token is", auth.token);
-        console.log("New Comment")
+
+        var channel_Id = auth.channelId.toString();
+        // console.log("Channel ID Below")
+        // console.log(channel_Id)
 
         latestAuth = auth;
         // Set up the header for requests
@@ -90,7 +93,10 @@ $(function() {
 
             // Open the websocket
             socket.open();
-        } 
+        }
+
+        getChannelId(latestAuth);
+
 
     });
 
@@ -112,10 +118,24 @@ $(function() {
         // console.log(diff);
     });
 
-    $(document).ready(function() {
-        $("#start_logging").click(function(){
-            alert("button");
-        }); 
+});
+
+// collect channelId and send it to backend
+function getChannelId(auth) {
+    console.log ("Here 2");
+    console.log(auth.channelId);
+    var channel_id = auth.channelId.toString()
+    $.ajax({
+        type: "POST",
+        url: "/collect_channel_name",
+        data: { channel_Id: channel_id},
+        success: function(data) {
+          console.log('message', data.message);
+        },
+        error: function(jqXHR, textStatus, err) {
+            alert('text status '+textStatus+', err '+err)
+        }
     });
 
-});
+    // $.post('/collect_channel_name', { channel_Id: auth.channelId });
+}
