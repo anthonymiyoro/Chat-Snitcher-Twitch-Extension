@@ -125,20 +125,32 @@ app.use('/start_logging', function (req, res) {
     console.log(channel_id);
     // always send a response:
     res.json({ ok: true });
-
-    var options = { method: 'GET',
-        url: 'https://api.twitch.tv/helix/users',
-        qs: { id: channel_id },
-        headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
-
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        
-        console.log(body);
-        });
+    // run function that gets the streamer name
+    getStreamerName(channel_id);
     });
 
-  
+ // collect stramer ID and return streamer name
+function getStreamerName(channel_id) {
+    console.log ("Here 2");
+
+    var options = { method: 'GET',
+    url: 'https://api.twitch.tv/helix/users',
+    qs: { id: channel_id },
+    headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
+
+request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+    // Collect login name from response
+    console.log(body);
+    var channel_detail = JSON.parse(body).data;
+    var channel_name = channel_detail[0].login;
+
+    console.log (channel_name);
+    });
+    // $.post('/collect_channel_name', { channel_Id: auth.channelId });
+}
+    
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
