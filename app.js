@@ -57,7 +57,6 @@ let index = require('./routes/index');
 // index.renderFrontend();
 
 var app = express();
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'pug');
@@ -102,7 +101,15 @@ app.use((req, res, next) => {
 
 app.use('/', index);
 app.use('/frontend', express.static(path.join(__dirname, 'frontend')));
-
+app.use('/start_logging', function (req, res) {
+    // req is the Node.js http request object
+    // res is the Node.js http response object
+    // next is a function to call to invoke the next middleware
+    console.log(req.body);
+    console.log("start_logging");
+    res.sendStatus(200);
+  })
+  
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -125,5 +132,4 @@ app.use(function(err, req, res, next) {
       res.status(500).send({err: "Server Error"});
     }
 });
-
 module.exports = app;

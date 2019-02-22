@@ -1,35 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const wins = require('winston');
-const pug = require('pug');
-const fs = require('fs');
+var app = express();
+var http = require('http');
+var server = http.createServer(app);
 
 const twitch = require('../custom_modules/twitch');
 const ext_sockets = require('../custom_modules/extension_sockets');
 const mw = require('./middleware');
 
-// function renderFrontend() {
-//     // Re-render the static viewer html
-//     let viewerRender = pug.renderFile('frontend/viewer.pug');
-//     fs.writeFileSync('frontend/viewer.html', viewerRender);
-
-//     let configRender = pug.renderFile('frontend/config.pug');
-//     fs.writeFileSync('frontend/config.html', configRender);
-
-//     let liveRender = pug.renderFile('frontend/live.pug');
-//     fs.writeFileSync('frontend/live.html', liveRender);
-// }
-// router.renderFrontend = renderFrontend;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Twitch Extension template'});
-});
-
-// Re-render then redirect to index
-router.get('/render', (req, res, next) => {
-    // renderFrontend();
-    res.redirect('/');
 });
 
 // Test message to all sockets in a channel
@@ -69,3 +52,6 @@ router.post('/testPubsubWhisper', async (req, res, next) => {
 });
 
 module.exports = router;
+
+
+

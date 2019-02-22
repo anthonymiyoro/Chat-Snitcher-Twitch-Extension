@@ -70,6 +70,7 @@ $(function() {
         // console.log("The extension clientId is", auth.clientId);
         console.log("My Twitch opaque user id is", auth.userId);
         // console.log("The JWT token is", auth.token);
+        console.log("New Comment")
 
         latestAuth = auth;
         // Set up the header for requests
@@ -89,7 +90,8 @@ $(function() {
 
             // Open the websocket
             socket.open();
-        }
+        } 
+
     });
 
     // Sub all viewers to the broadcast channel
@@ -102,13 +104,18 @@ $(function() {
         console.log("Twitch: onError called");
         console.log("The error was", err);
     });
-
     // onContext handler. Providers viewer mode, resolution, delay and other stuff
     // This can be very spammy, commented out by default
     twitch.onContext((context, diff) => {
         // console.log("Twitch: onContext called");
         // console.log(context);
         // console.log(diff);
+    });
+
+    $(document).ready(function() {
+        $("#start_logging").click(function(){
+            alert("button");
+        }); 
     });
 
 });

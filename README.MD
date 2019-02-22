@@ -13,16 +13,17 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Draw graphs on twitch client with d3js
 
-- [ ] Create folder that logs can go to
-
-- [ ] Find a way to monitor the queue
-
-- [ ] Collect username of channel from get request
-
-- [ ] Send POST request to server to begin logging of chat
-
-- [ ] Send POST request to collect JSON object with latest chat info
-
 - [ ] Find way to stream JSON Objects as HTML to frontend
 
 - [ ] Find way to calculate the average sentiment from JSON object
+
+- [ ] (1st) Route button click to nodejs url /begin_logging. NodeJS url then collects the userID, sends a get request to twitch which returns a JSON response. 
+
+- [ ] Function goes through JSON object and gets username
+
+- [ ] 1st function sends POST request to my server initiating logging
+
+- [ ] Wait 10 seconds then send another POST request collecting the chat
+
+
+
