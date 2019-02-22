@@ -128,7 +128,8 @@ function getChannelId(auth) {
     $.ajax({
         type: "POST",
         url: "/collect_channel_name",
-        data: { channel_Id: channel_id},
+        contentType: 'application/json',
+        data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {
           console.log('message', data.message);
         },

@@ -104,16 +104,6 @@ app.use((req, res, next) => {
 app.use('/', index);
 app.use('/frontend', express.static(path.join(__dirname, 'frontend')));
 
-// // Collect channel ID from frontend and return channel name
-// app.use('/collect_channel_name', function (channel_id) {
-//     // req is the Node.js http request object
-//     // res is the Node.js http response object
-//     // next is a function to call to invoke the next middleware
-//     console.log(channel_Id);
-//     console.log("start_logging");
-//     res.sendStatus(200);
-//   })
-
 app.use('/start_logging', function (req, res) {
     // req is the Node.js http request object
     // res is the Node.js http response object
@@ -123,15 +113,31 @@ app.use('/start_logging', function (req, res) {
     res.sendStatus(200).send({result: "Successful!!"});
   })
 
+  app.use(bodyParser.json());
+//   Collect channel ID from frontend on extension load
   app.post('/collect_channel_name', function(req, res){
     // you have address available in req.body:
     console.log(req.body);
-    console.log("readyQQQQ");
-    var channel_Id = req.body
-    // console.log(channel_Id);
+    var request_body = (req.body); // { channel_Id: '154139682' }
+    // collect channe_id from json request
+    var channel_id = request_body.channel_Id;
+
+    console.log(channel_id);
     // always send a response:
     res.json({ ok: true });
-  });
+
+    var options = { method: 'GET',
+        url: 'https://api.twitch.tv/helix/users',
+        qs: { id: channel_id },
+        headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        
+        console.log(body);
+        });
+    });
+
   
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
