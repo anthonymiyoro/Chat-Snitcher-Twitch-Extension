@@ -3,43 +3,43 @@
 // Get the party started
 $(function() {
 
-    // Socket connection to EBS
-    var socket = io('https://localhost:9999', {
-        autoConnect: false
-    });
-
-    // WebSocket Handlers
-    socket.on('connect', () => {
-        console.log("Socket connected successfully, my Socket ID is " + socket.id);
-    });
-    socket.on('connect_error', (err) => {
-        console.log("Failed to connect to socket:", err);
-    });
-    socket.on('connect_timeout', (timeout) => {
-        console.log("Socket connection timed out:", timeout);
-    });
-    socket.on('error', (err) => {
-        console.log("Socket error:", err);
-    });
-    socket.on('disconnect', (reason) => {
-        console.log("Socket disconnected:", reason);
-    });
-    socket.on('reconnect', (attemptNumber) => {
-        console.log("Successfully reconnected to socket after " + attemptNumber + " attempts");
-    });
-    socket.on('reconnect_attempt', (attemptNumber) => {
-        console.log("Attempting reconnect... " + attemptNumber);
-    });
-    socket.on('reconnect_error', (err) => {
-        console.log("Failed to reconnect to socket:", err);
-    });
-    socket.on('test', (msg) => {
-        console.log("New socket 'test' message:", msg);
-    });
-    socket.on('whisper', (msg) => {
-        console.log("New socket 'whisper' message:", msg);
-    });
-
+        // Socket connection to EBS
+        var socket = io('https://localhost:9999', {
+            autoConnect: false
+        });
+    
+        // WebSocket Handlers
+        socket.on('connect', () => {
+            console.log("Socket connected successfully, my Socket ID is " + socket.id);
+        });
+        socket.on('connect_error', (err) => {
+            console.log("Failed to connect to socket:", err);
+        });
+        socket.on('connect_timeout', (timeout) => {
+            console.log("Socket connection timed out:", timeout);
+        });
+        socket.on('error', (err) => {
+            console.log("Socket error:", err);
+        });
+        socket.on('disconnect', (reason) => {
+            console.log("Socket disconnected:", reason);
+        });
+        socket.on('reconnect', (attemptNumber) => {
+            console.log("Successfully reconnected to socket after " + attemptNumber + " attempts");
+        });
+        socket.on('reconnect_attempt', (attemptNumber) => {
+            console.log("Attempting reconnect... " + attemptNumber);
+        });
+        socket.on('reconnect_error', (err) => {
+            console.log("Failed to reconnect to socket:", err);
+        });
+        socket.on('test', (msg) => {
+            console.log("New socket 'test' message:", msg);
+        });
+        socket.on('whisper', (msg) => {
+            console.log("New socket 'whisper' message:", msg);
+        });
+    
 
     // Twitch function handlers
     var twitch = window.Twitch.ext;
@@ -71,7 +71,7 @@ $(function() {
         console.log("My Twitch opaque user id is", auth.userId);
         // console.log("The JWT token is", auth.token);
 
-        var channel_Id = auth.channelId.toString();
+        // var channel_Id = auth.channelId.toString();
         // console.log("Channel ID Below")
         // console.log(channel_Id)
 
@@ -96,8 +96,7 @@ $(function() {
         }
 
         getChannelId(latestAuth);
-
-
+        getLatestAnalysis(latestAuth);
     });
 
     // Sub all viewers to the broadcast channel
@@ -117,13 +116,16 @@ $(function() {
         // console.log(context);
         // console.log(diff);
     });
-
 });
 
-// collect channelId and send it to backend
+
+
+// Collect streamers channelId from twitch and send to backend.
+// The /collect_channel_name url then uses this ID to get the channel name
+// which can then be used to begin analysing the channels chat room on my AWS
+// server.
+
 function getChannelId(auth) {
-    console.log ("Here 2");
-    console.log(auth.channelId);
     var channel_id = auth.channelId.toString()
     $.ajax({
         type: "POST",
@@ -137,6 +139,55 @@ function getChannelId(auth) {
             alert('text status '+textStatus+', err '+err)
         }
     });
+}
 
-    // $.post('/collect_channel_name', { channel_Id: auth.channelId });
+
+function getLatestAnalysis(auth) {
+    var channel_id = auth.channelId.toString()
+    $.ajax({
+        type: "POST",
+        url: "/collect_chat_analysis",
+        contentType: 'application/json',
+        data: JSON.stringify({ channel_Id: channel_id}),
+        success: function(data) {
+          console.log('message', data.message);
+        },
+        error: function(jqXHR, textStatus, err) {
+            alert('text status '+textStatus+', err '+err)
+        }
+    });
+}
+
+(function worker() {
+    $.ajax({
+      url: 'ajax/test.html', 
+      success: function(data) {
+        $('.result').html(data);
+      },
+      complete: function() {
+        // Schedule the next request when the current one's complete
+        setTimeout(worker, 5000);
+      }
+    });
+  })();
+
+
+// Collect streamers channelId from twitch and send to backend where it 
+// will be converted to the streamer name. From backend analyssi of chat room 
+// will stop.
+
+function stopLogging(auth){
+    var channel_id = auth.channelId.toString()
+    $.ajax({
+        type: "POST",
+        url: "/collect_channel_name",
+        contentType: 'application/json',
+        data: JSON.stringify({ channel_Id: channel_id}),
+        success: function(data) {
+          console.log('message', data.message);
+        },
+        error: function(jqXHR, textStatus, err) {
+            alert('text status '+textStatus+', err '+err)
+        }
+    });
 }

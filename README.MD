@@ -11,19 +11,28 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Clean up code and comments
 
-- [ ] Draw graphs on twitch client with d3js
+- [ ] Install Bootstrap ETC for frontend
 
 - [ ] Find way to stream JSON Objects as HTML to frontend
 
-- [ ] Find way to calculate the average sentiment from JSON object
+- [x] (1st) Route button click to nodejs url /begin_logging. NodeJS url then collects the userID, sends a get request to twitch which returns a JSON response. 
 
-- [ ] (1st) Route button click to nodejs url /begin_logging. NodeJS url then collects the userID, sends a get request to twitch which returns a JSON response. 
+- [x] Function goes through JSON object and gets username
 
-- [ ] Function goes through JSON object and gets username
 
-- [ ] 1st function sends POST request to my server initiating logging
+- [ ] Add Animation that changes based on average sentiment
 
-- [ ] Wait 10 seconds then send another POST request collecting the chat
+- [ ] Next to animation there is a sentence, the average sentiment is green(Happy)! or neutral(Blue) or fiesty!!(red)
+
+- [ ] Start Logging on load 
+
+- [ ] Stop Logging after checking get request
+
+- [ ] Calculate average moment sentiment and store in variable
+
+- [ ] Write average sentiment to frontend
+
+- [ ] Run above functin every 35 seconds
 
 
 
