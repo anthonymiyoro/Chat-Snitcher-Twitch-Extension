@@ -96,8 +96,8 @@ $(function() {
         }
         // Start logging
         getChannelId(latestAuth);
-        // collect latest analysis
-        getLatestAnalysis(latestAuth);
+        // // collect latest analysis
+        // getLatestAnalysis(latestAuth);
 
        
     });
@@ -184,7 +184,7 @@ function getLatestAnalysis(auth) {
     });
 }
 
-// (function worker() {
+(function worker() {
 // $.ajax({
 //   url: 'ajax/test.html', 
 //   success: function(data) {
@@ -195,7 +195,43 @@ function getLatestAnalysis(auth) {
 //     setTimeout(worker, 5000);
 //   }
 // });
-// })();
+
+    $.ajax({
+        type: "POST",
+        url: "/collect_chat_analysis",
+        contentType: 'application/json',
+        data: JSON.stringify({ channel_Id: 154139682}),
+        success: function(data) {
+        // on success write somethibg to HTML
+        // { "average_sentiment": 0.27 }
+            var average_sentiment = data.average_sentiment;
+            if (average_sentiment > 0.038){
+                var mood = "Awesome!!";
+            }
+            else if (average_sentiment > 0.01 && average_sentiment < 0.038 ){
+                mood = "Positive";
+            }
+            else if (average_sentiment > -0.01 && average_sentiment< 0.01){
+                mood = "Neutral";
+            }
+            else if (average_sentiment < -0.01 && average_sentiment > -0.51){
+                mood = "Miffed";
+            }
+            else if (average_sentiment <  -0.51 && average_sentiment > -1){
+                mood = "Bad";
+            }
+            else{
+                mood = "Error"+ average_sentiment ;
+            }
+            var div = document.querySelector("#viewer_sentiment");
+            div.innerHTML = "Your chat room is feeling "+ mood;
+        },
+        complete: function() {
+                // Schedule the next request when the current one's complete
+                setTimeout(worker, 5000);
+              }
+    });
+})();
 
 
 // Collect streamers channelId from twitch and send to backend where it 
