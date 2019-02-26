@@ -228,8 +228,8 @@ function collectAnalysis(streamer_name){
   request(options, function (error, response, body) {
     if (response.statusCode == 201) {
         // collect comment, score, timestamp from response, calculate average and send it to frontend
-        console.log("This is the latest analysis!!!!");
-        console.log(body); // Print the response we get.
+        // console.log("This is the latest analysis!!!!");
+        // console.log(body); // Print the response we get.
         var request_body = (body); 
         // [
         //   {
@@ -243,21 +243,46 @@ function collectAnalysis(streamer_name){
         //       "sentiment_score": 0.3595
         //   }
         // ]
-        for (var i = 0, l = request_body.length; i < l; i++) {
-          var message_score = request_body[i];
-          for (var key in message_score){
-              if (message_score.hasOwnProperty(key)) {
-                // console.log(key + " -> " + message_score[key]);
-                if (key === "sentiment_score"){
-                  console.log(message_score[key]);
-                  var score = message_score[key];
-                  sentiment_count = sentiment_count + 1;
-                  average_sentiment = (average_sentiment + score)/sentiment_count;
-                  return (sentiment_count, average_sentiment);
-                }
-            }
+        // for (var i = 0, l = request_body.length; i < l; i++) {
+        //   var message_score = request_body[i];
+        //     for (var key in message_score){
+              
+        //         // if (message_score.hasOwnProperty(key) && key === "sentiment_score") {
+        //           console.log(key + " -> " + message_score[key]); 
+        //           // var score = message_score[key];
+        //           // console.log("Sentiment Score!!");
+        //           // console.log(score);
+        //           // sentiment_count = sentiment_count + 1;
+        //           // console.log("Sentiment Count!!");
+        //           // console.log(sentiment_count);
+        //           // average_sentiment = (average_sentiment + score)/sentiment_count;
+        //           // console.log("average sentiment");
+        //           // console.log(average_sentiment);
+        //           return (sentiment_count, average_sentiment);
+                  
+        //       // }
+        //     }
+        // }
+
+        request_body.forEach(function (arrayItem) {
+        // Collect individual JSON objects
+        var comment = arrayItem;
+        // console.log(comment);
+        // Loop through each JSON Object and collect score
+        for (var key in comment) {
+          if (comment.hasOwnProperty(key) &&  key === "sentiment_score") {
+              // console.log(key + " -> " + comment[key]);
+              var score = comment[key];
+              console.log(score);
+              sentiment_count = sentiment_count + 1;
+              console.log("Sentiment Count!!");
+              console.log(sentiment_count);
+              average_sentiment = (average_sentiment + score)/sentiment_count;
+              console.log("average sentiment");
+              console.log(average_sentiment);
           }
         }
+      });
         console.log("This is the id!");
         console.log(log_task_id);
         return log_task_id;
