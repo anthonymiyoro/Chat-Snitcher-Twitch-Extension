@@ -14,8 +14,37 @@ let mw = require('./routes/middleware');
 // Global variables will be used in functions
 var log_task_id;
 var channel_name;
-var average_sentiment = 0;
-var sentiment_count = 0;
+
+// Deal with global variables
+
+// global average sentiment variable
+var setGlobalSentiment = (function(global) {
+  return function(value) {
+    global.average_sentiment = value;
+  }
+}(this));
+var readGlobalSentiment = (function(global) {
+  return function() {
+    return global.average_sentiment;
+  }
+}(this));
+
+// initialise global sentiment score
+setGlobalSentiment(0);
+
+var setGlobalSentCount = (function(global) {
+  return function(value) {
+    global.sentiment_count = value;
+  }
+}(this));
+var readGlobalSentCount = (function(global) {
+  return function() {
+    return global.sentiment_count;
+  }
+}(this));
+
+// Initialise sentiment count
+setGlobalSentCount(0);
 
 
 // Set up the winston logger
@@ -111,9 +140,7 @@ app.use((req, res, next) => {
 app.use('/', index);
 app.use('/frontend', express.static(path.join(__dirname, 'frontend')));
 
-
 app.use(bodyParser.json());
-
 //  View that collects the stremer name and assigns it to global variable
 app.post('/collect_channel_name', function(req, res){
   // you have address available in req.body:
@@ -127,23 +154,23 @@ app.post('/collect_channel_name', function(req, res){
   res.json({ ok: true });
   // run function that gets the streamer name
   getStreamerNameLogging(channel_id);
-  });
+});
+
 
 //   View that posts average sentiment and timestamp to frontend
 app.post('/collect_chat_analysis', function(req, res){
-  // you have address available in req.body:
-  console.log(req.body);
   var request_body = (req.body); // { channel_Id: '154139682' }
-  // collect channe_id from json request
+  // collect channel_id from json request, get anlysis and send to frontend JS
   var channel_id = request_body.channel_Id;
-  // run function that gets the streamer name
-  getStreamerNameAnalysis(channel_id);
+  getStreamerNameAnalysis(channel_id); 
+
+  // Collect avergae sentiment from global variable after getStreamerNameAnalysis
+    // is done 
+  var average_sentiment = readGlobalSentiment();
   console.log("average sent", average_sentiment);
+  res.status(200).json({ "average_sentiment": average_sentiment });
 
-  res.status(200).json({ "average_sentiment": average_sentiment })
-
-  });
-
+});
 
  // get streamer name so we can start logging the chat
 function getStreamerNameLogging(channel_id) {
@@ -176,7 +203,6 @@ function getStreamerNameLogging(channel_id) {
       channel_name = channel_detail[0].login;
       collectAnalysis(channel_name);
       // return calculated sentiment to previous function
-      return average_sentiment;
   });
 }
     
@@ -197,8 +223,7 @@ function startLogging(channel_name){
         // var request_body = JSON.parse(body, 'utf8').data; // [ 'Logging of twitch chat has began successfully.','8b8b816e-f425-414a-a9b2-87148cfa2974' ]
         for (var i = 0, l = body.length; i < l; i++){
           var obj = body[i];
-          // console.log(obj)
-          log_task_id = obj
+          log_task_id = obj;
         }
         return (log_task_id)
         
@@ -246,26 +271,29 @@ function collectAnalysis(streamer_name){
         // Loop through each JSON Object and collect score
         for (var key in comment) {
           if (comment.hasOwnProperty(key) &&  key === "sentiment_score") {
-              // console.log(key + " -> " + comment[key]);
               var score = comment[key];
+              var sentiment_count = readGlobalSentCount();
               sentiment_count = sentiment_count + 1;
+              setGlobalSentCount(sentiment_count);
+
+              var average_sentiment = readGlobalSentiment();
               average_sentiment = (average_sentiment + score)/sentiment_count;
+              console.log("Calculated average sentiment");
               console.log(average_sentiment);
-              return average_sentiment;
+
+              // put average sentiment in global variable
+              setGlobalSentiment(average_sentiment);
           }
         }
       });
-        
-
     }else{
         // console.log(response);
         console.log("This is an error!")
         console.log(error);
         console.log(body);
     }
-    });
+  });
 }
-
 
 // send post request to server to stop logging a stream
 function stopLogging(log_task_id){

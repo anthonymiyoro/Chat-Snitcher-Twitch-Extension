@@ -173,7 +173,7 @@ function getLatestAnalysis(auth) {
                 mood = "Bad";
             }
             else{
-                mood = "Error";
+                mood = "Error"+ average_sentiment ;
             }
             var div = document.querySelector("#viewer_sentiment");
             div.innerHTML = "Your chat room is feeling "+ mood;
