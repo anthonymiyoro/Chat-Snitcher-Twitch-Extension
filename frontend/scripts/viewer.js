@@ -304,6 +304,8 @@ $(function() {
         }
         // getChannelId(latestAuth);
         getLatestAnalysis(latestAuth);
+
+       
     });
 
     // Sub all viewers to the broadcast channel
@@ -352,6 +354,8 @@ $.ajax({
 
 function getLatestAnalysis(auth) {
 var channel_id = auth.channelId.toString()
+var div = document.querySelector("#viewer_sentiment");
+div.innerHTML = "This is the text, <strong>markup</strong> works too.";
 $.ajax({
     type: "POST",
     url: "/collect_chat_analysis",

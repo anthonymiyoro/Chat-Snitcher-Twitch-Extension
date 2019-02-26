@@ -243,26 +243,6 @@ function collectAnalysis(streamer_name){
         //       "sentiment_score": 0.3595
         //   }
         // ]
-        // for (var i = 0, l = request_body.length; i < l; i++) {
-        //   var message_score = request_body[i];
-        //     for (var key in message_score){
-              
-        //         // if (message_score.hasOwnProperty(key) && key === "sentiment_score") {
-        //           console.log(key + " -> " + message_score[key]); 
-        //           // var score = message_score[key];
-        //           // console.log("Sentiment Score!!");
-        //           // console.log(score);
-        //           // sentiment_count = sentiment_count + 1;
-        //           // console.log("Sentiment Count!!");
-        //           // console.log(sentiment_count);
-        //           // average_sentiment = (average_sentiment + score)/sentiment_count;
-        //           // console.log("average sentiment");
-        //           // console.log(average_sentiment);
-        //           return (sentiment_count, average_sentiment);
-                  
-        //       // }
-        //     }
-        // }
 
         request_body.forEach(function (arrayItem) {
         // Collect individual JSON objects
