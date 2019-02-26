@@ -136,12 +136,11 @@ app.post('/collect_chat_analysis', function(req, res){
   var request_body = (req.body); // { channel_Id: '154139682' }
   // collect channe_id from json request
   var channel_id = request_body.channel_Id;
-
-  console.log(channel_id);
-  // always send a response:
-  res.json({ ok: true });
   // run function that gets the streamer name
   getStreamerNameAnalysis(channel_id);
+  console.log("average sent", average_sentiment);
+
+  res.status(200).json({ "average_sentiment": average_sentiment })
 
   });
 
@@ -169,7 +168,6 @@ function getStreamerNameLogging(channel_id) {
   url: 'https://api.twitch.tv/helix/users',
   qs: { id: channel_id },
   headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
-
   request(options, function (error, response, body) {
       if (error) throw new Error(error);
       // Collect login name from response
@@ -177,6 +175,8 @@ function getStreamerNameLogging(channel_id) {
       var channel_detail = JSON.parse(body).data;
       channel_name = channel_detail[0].login;
       collectAnalysis(channel_name);
+      // return calculated sentiment to previous function
+      return average_sentiment;
   });
 }
     
@@ -194,8 +194,6 @@ function startLogging(channel_name){
   request(options, function (error, response, body) {
     if (response.statusCode == 201) {
         // collect log_task_id from response. it will be used to terminate logging
-        // console.log("This is the body!");
-        // console.log(body); // Print the shortened url.
         // var request_body = JSON.parse(body, 'utf8').data; // [ 'Logging of twitch chat has began successfully.','8b8b816e-f425-414a-a9b2-87148cfa2974' ]
         for (var i = 0, l = body.length; i < l; i++){
           var obj = body[i];
@@ -213,8 +211,6 @@ function startLogging(channel_name){
   });
 }
 
-// Collects the comments and sentiment sent by the server and
-// calculates the average sentiment. Must be ran afer the startLogging function.
 function collectAnalysis(streamer_name){
   var options = {
     uri: 'http://127.0.0.1:8000/initiate_analysis/',
@@ -228,8 +224,7 @@ function collectAnalysis(streamer_name){
   request(options, function (error, response, body) {
     if (response.statusCode == 201) {
         // collect comment, score, timestamp from response, calculate average and send it to frontend
-        // console.log("This is the latest analysis!!!!");
-        // console.log(body); // Print the response we get.
+      
         var request_body = (body); 
         // [
         //   {
@@ -253,19 +248,14 @@ function collectAnalysis(streamer_name){
           if (comment.hasOwnProperty(key) &&  key === "sentiment_score") {
               // console.log(key + " -> " + comment[key]);
               var score = comment[key];
-              console.log(score);
               sentiment_count = sentiment_count + 1;
-              console.log("Sentiment Count!!");
-              console.log(sentiment_count);
               average_sentiment = (average_sentiment + score)/sentiment_count;
-              console.log("average sentiment");
               console.log(average_sentiment);
+              return average_sentiment;
           }
         }
       });
-        console.log("This is the id!");
-        console.log(log_task_id);
-        return log_task_id;
+        
 
     }else{
         // console.log(response);
