@@ -146,44 +146,6 @@ $.ajax({
 }
 
 
-function getLatestAnalysis(auth) {
-    var channel_id = auth.channelId.toString()
-    $.ajax({
-        type: "POST",
-        url: "/collect_chat_analysis",
-        contentType: 'application/json',
-        data: JSON.stringify({ channel_Id: channel_id}),
-        success: function(data) {
-        // on success write somethibg to HTML
-        // { "average_sentiment": 0.27 }
-            var average_sentiment = data.average_sentiment;
-            if (average_sentiment > 0.51){
-                var mood = "Happy";
-            }
-            else if (average_sentiment > 0 && average_sentiment < 0.51 ){
-                mood = "Positive";
-            }
-            else if (average_sentiment == 0.0){
-                mood = "Neutral";
-            }
-            else if (average_sentiment < 0 && average_sentiment > -0.51){
-                mood = "Miffed";
-            }
-            else if (average_sentiment <  -0.51 && average_sentiment > -1){
-                mood = "Bad";
-            }
-            else{
-                mood = "Error"+ average_sentiment ;
-            }
-            var div = document.querySelector("#viewer_sentiment");
-            div.innerHTML = "Your chat room is feeling "+ mood;
-        },
-        error: function(jqXHR, textStatus, err) {
-            alert('text status '+textStatus+', err '+err)
-        }
-    });
-}
-
 (function worker() {
 // $.ajax({
 //   url: 'ajax/test.html', 
@@ -195,7 +157,6 @@ function getLatestAnalysis(auth) {
 //     setTimeout(worker, 5000);
 //   }
 // });
-
     $.ajax({
         type: "POST",
         url: "/collect_chat_analysis",
@@ -205,30 +166,48 @@ function getLatestAnalysis(auth) {
         // on success write somethibg to HTML
         // { "average_sentiment": 0.27 }
             var average_sentiment = data.average_sentiment;
-            if (average_sentiment > 0.038){
+            if (average_sentiment > 0.048){
                 var mood = "Awesome!!";
+                var img = document.createElement("IMG");
+                img.src = "images/awesome.gif";
+                
             }
-            else if (average_sentiment > 0.01 && average_sentiment < 0.038 ){
+            else if (average_sentiment > 0.01 && average_sentiment < 0.048 ){
                 mood = "Positive";
+                img = document.createElement("IMG");
+                img.src = "images/happy.gif";
+                
             }
             else if (average_sentiment > -0.01 && average_sentiment< 0.01){
                 mood = "Neutral";
+                img = document.createElement("IMG");
+                img.src = "images/neutral.gif";
+                
             }
-            else if (average_sentiment < -0.01 && average_sentiment > -0.51){
+            else if (average_sentiment < -0.01 && average_sentiment > -0.031){
                 mood = "Miffed";
+                img = document.createElement("IMG");
+                img.src = "images/miffed.gif";
+                
             }
-            else if (average_sentiment <  -0.51 && average_sentiment > -1){
+            else if (average_sentiment <  -0.031 && average_sentiment > -1){
                 mood = "Bad";
+                img = document.createElement("IMG");
+                img.src = "images/bad.gif"; 
             }
             else{
                 mood = "Error"+ average_sentiment ;
             }
             var div = document.querySelector("#viewer_sentiment");
             div.innerHTML = "Your chat room is feeling "+ mood;
+
+            var image_div = document.querySelector("#imageDiv1");
+            image_div.innerHTML ='<img id="sentiment_image" src=' + img.src + '  class="img-thumbnail"></img>';
+            // document.getElementById('imageDiv').style.backgroundImage = img.src;
         },
         complete: function() {
                 // Schedule the next request when the current one's complete
-                setTimeout(worker, 5000);
+                setTimeout(worker, 15000);
               }
     });
 })();

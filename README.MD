@@ -13,7 +13,7 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Install Bootstrap ETC for frontend
 
-- [ ] Find way to stream JSON Objects as HTML to frontend
+- [x] Find way to stream JSON Objects as HTML to frontend
 
 - [x] (1st) Route button click to nodejs url /begin_logging. NodeJS url then collects the userID, sends a get request to twitch which returns a JSON response. 
 
@@ -24,15 +24,18 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Next to animation there is a sentence, the average sentiment is green(Happy)! or neutral(Blue) or fiesty!!(red)
 
-- [ ] Start Logging on load 
+- [x] Start Logging on load 
 
 - [ ] Stop Logging after checking get request
 
-- [ ] Calculate average moment sentiment and store in variable
+- [x] Calculate average moment sentiment and store in variable
 
-- [ ] Write average sentiment to frontend
+- [x] Write average sentiment to frontend
 
-- [ ] Run above functin every 35 seconds
+- [x] Run above functin every 15 seconds
+
+- [ ] Host the damn thing
+
 
 
 
