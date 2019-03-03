@@ -166,7 +166,7 @@ function startLogging() {
         contentType: "application/json",
         data: JSON.stringify({ channel_Id: streamer_id}),
         success: function(data) {
-          console.log('message sent', data);
+        //   console.log('message sent', data);
         },
         error: function(jqXHR, textStatus, err) {
             alert('text status '+textStatus+', err '+err)
@@ -189,7 +189,7 @@ function startWorker(){
 
     (function worker() {
         var channel_id = getGlobalChannelName();
-        console.log("channel_id", channel_id);
+        // console.log("channel_id", channel_id);
             $.ajax({
                 type: "POST",
                 url: "/collect_chat_analysis",
@@ -211,13 +211,13 @@ function startWorker(){
                         img.src = "images/happy.gif";
                         
                     }
-                    else if (average_sentiment > -0.01 && average_sentiment< 0.024){
+                    else if (average_sentiment > -0.019 && average_sentiment< 0.024){
                         mood = "Neutral";
                         img = document.createElement("IMG");
                         img.src = "images/neutral.gif";
                         
                     }
-                    else if (average_sentiment < -0.01 && average_sentiment > -0.031){
+                    else if (average_sentiment < -0.020 && average_sentiment > -0.031){
                         mood = "Miffed";
                         img = document.createElement("IMG");
                         img.src = "images/miffed.gif";
@@ -261,7 +261,7 @@ function stopLogging(auth){
         contentType: 'application/json',
         data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {
-        console.log('message', data.message);
+        // console.log('message', data.message);
         },
         error: function(jqXHR, textStatus, err) {
             alert('text status '+textStatus+', err '+err)
