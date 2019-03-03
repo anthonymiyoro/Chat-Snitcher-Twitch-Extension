@@ -11,7 +11,7 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Clean up code and comments
 
-- [ ] Install Bootstrap ETC for frontend
+- [x] Install Bootstrap ETC for frontend
 
 - [x] Find way to stream JSON Objects as HTML to frontend
 
@@ -20,13 +20,13 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 - [x] Function goes through JSON object and gets username
 
 
-- [ ] Add Animation that changes based on average sentiment
+- [x] Add Animation that changes based on average sentiment
 
-- [ ] Next to animation there is a sentence, the average sentiment is green(Happy)! or neutral(Blue) or fiesty!!(red)
+- [x] Next to animation there is a sentence, the average sentiment is green(Happy)! or neutral(Blue) or fiesty!!(red)
 
 - [x] Start Logging on load 
 
-- [ ] Stop Logging after checking get request
+- [x] Stop Logging after checking get request
 
 - [x] Calculate average moment sentiment and store in variable
 
@@ -35,6 +35,18 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 - [x] Run above functin every 15 seconds
 
 - [ ] Host the damn thing
+
+- [ ] Fix issues with get request
+
+- [ ] Host on heroku
+
+- [ ] Install https
+
+- [ ] Create logo and start screen
+
+- [ ] Take screenshots
+
+- [ ] Improve rating algorithm
 
 
 

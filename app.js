@@ -141,76 +141,25 @@ app.use('/', index);
 app.use('/frontend', express.static(path.join(__dirname, 'frontend')));
 
 app.use(bodyParser.json());
-//  View that collects the stremer name and assigns it to global variable
-app.post('/collect_channel_name', function(req, res){
-  // you have address available in req.body:
-  console.log(req.body);
-  var request_body = (req.body); // { channel_Id: '154139682' }
-  // collect channe_id from json request
-  var channel_id = request_body.channel_Id;
 
-  console.log(channel_id);
+//  View that starts logging a channels chat
+app.post('/collect_channel_name', function(req, res){
+  // console.log(req.body);
+  var request_body = (req.body); // { channel_Id: 'ninja' }
+  // collect channe_id from json request
+  var channel_name = request_body.channel_Id;
+
+  // console.log(channel_id);
   // always send a response:
   res.json({ ok: true });
-  // run function that gets the streamer name
-  getStreamerNameLogging(channel_id);
+  // Start logging the streamers channel
+  startLogging(channel_name);
 });
-
-
-//   View that posts average sentiment and timestamp to frontend
-app.post('/collect_chat_analysis', function(req, res){
-  var request_body = (req.body); // { channel_Id: '154139682' }
-  // collect channel_id from json request, get anlysis and send to frontend JS
-  var channel_id = request_body.channel_Id;
-  getStreamerNameAnalysis(channel_id); 
-
-  // Collect avergae sentiment from global variable after getStreamerNameAnalysis
-    // is done 
-  var average_sentiment = readGlobalSentiment();
-  console.log("average sent", average_sentiment);
-  res.status(200).json({ "average_sentiment": average_sentiment });
-
-});
-
- // get streamer name so we can start logging the chat
-function getStreamerNameLogging(channel_id) {
-    var options = { method: 'GET',
-    url: 'https://api.twitch.tv/helix/users',
-    qs: { id: channel_id },
-    headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
-
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
-        // Collect login name from response
-        // console.log(body);
-        var channel_detail = JSON.parse(body).data;
-        channel_name = channel_detail[0].login;
-        startLogging(channel_name);
-    });
-}
-
- // get streamer name so we can analyse the chat
- function getStreamerNameAnalysis(channel_id) {
-  var options = { method: 'GET',
-  url: 'https://api.twitch.tv/helix/users',
-  qs: { id: channel_id },
-  headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
-  request(options, function (error, response, body) {
-      if (error) throw new Error(error);
-      // Collect login name from response
-      // console.log(body);
-      var channel_detail = JSON.parse(body).data;
-      channel_name = channel_detail[0].login;
-      collectAnalysis(channel_name);
-      // return calculated sentiment to previous function
-  });
-}
-    
 
 // send post request to server to start logging process
 function startLogging(channel_name){
   var options = {
-      uri: 'http://127.0.0.1:8000/initiate_logging/',
+      uri: 'http://chatsnitcherserver-dev.eu-west-2.elasticbeanstalk.com/initiate_logging/',
       method: 'POST',
       json: {
         "streamer_id": channel_name
@@ -224,6 +173,7 @@ function startLogging(channel_name){
         for (var i = 0, l = body.length; i < l; i++){
           var obj = body[i];
           log_task_id = obj;
+          console.log("Successfully started logging!")
         }
         return (log_task_id)
         
@@ -236,9 +186,66 @@ function startLogging(channel_name){
   });
 }
 
+
+//   View that posts average sentiment and timestamp to frontend
+app.post('/collect_chat_analysis', function(req, res){
+  var request_body = (req.body); // { channel_Id: 'ninja' }
+  // collect channel_id from json request, get anlysis and send to frontend JS
+
+  var channel_id = request_body.channel_Id;
+  console.log("channel_id_collected", channel_id);
+  collectAnalysis(channel_id); 
+
+  // Collect avergae sentiment from global variable after getStreamerNameAnalysis
+    // is done 
+  var average_sentiment = readGlobalSentiment();
+  console.log("average sent", average_sentiment);
+  res.status(200).json({ "average_sentiment": average_sentiment });
+
+});
+
+//  // get streamer name so we can start logging the chat
+// function getStreamerNameLogging(channel_id) {
+//     var options = { method: 'GET',
+//     url: 'https://api.twitch.tv/helix/users',
+//     qs: { id: channel_id },
+//     headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
+
+//     request(options, function (error, response, body) {
+//         if (error) throw new Error(error);
+//         // Collect login name from response
+//         // console.log(body);
+//         var channel_detail = JSON.parse(body).data;
+//         channel_name = channel_detail[0].login;
+//         startLogging(channel_name);
+//     });
+// }
+
+//  // get streamer name so we can analyse the chat
+//  function getStreamerNameAnalysis(channel_id) {
+//   var options = { method: 'GET',
+//   url: 'https://api.twitch.tv/helix/users',
+//   qs: { id: 154139682 },
+//   headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
+//   request(options, function (error, response, body) {
+//       if (error) throw new Error(error);
+//       // Collect login name from response
+//       // console.log(body);
+//       var channel_detail = JSON.parse(body);
+//       console.log(channel_detail);
+//       channel_name = channel_detail[0];
+//       console.log(channel_name);
+//       collectAnalysis("amiyoro");
+//       // return calculated sentiment to previous function
+//   });
+// }
+    
+
+
+
 function collectAnalysis(streamer_name){
   var options = {
-    uri: 'http://127.0.0.1:8000/initiate_analysis/',
+    uri: 'http://chatsnitcherserver-dev.eu-west-2.elasticbeanstalk.com/initiate_analysis/',
     method: 'POST',
     json: {
       "streamer_id": streamer_name
