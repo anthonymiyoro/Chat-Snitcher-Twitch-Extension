@@ -94,13 +94,8 @@ $(function() {
             // Open the websocket
             socket.open();
         }
-        // // Start logging
-        // getChannelId(latestAuth);
-        // // Deal with global variables
-        // console.log(latestAuth);
-    
-    // set twitch auth
-    setGlobalAuth(latestAuth);
+        // run function that sets the username of streamer
+        getStreamerName(auth.channelId);
        
     });
 
@@ -126,94 +121,132 @@ $(function() {
 
 
 // channelId getters and setters
-var setGlobalChannelId = (function(global) {
+var setGlobalChannelName = (function(global) {
 return function(value) {
 global.twitch_channel_id = value;
 }
 }(this));
-var getGlobalChannelId = (function(global) {
+var getGlobalChannelName = (function(global) {
     return function() {
     return global.twitch_channel_id;
     }
 }(this));
 
+
+//  // get streamer name so we can analyse the chat
+//  function getStreamerName(channel_id) {
+//   var options = { method: 'GET',
+//   url: 'https://api.twitch.tv/helix/users',
+//   qs: { id: 154139682 },
+//   headers: { 'Client-ID': 's72s2j2mm94920a4hk4921e5vc67ks' }};
+//   request(options, function (error, response, body) {
+//       if (error) throw new Error(error);
+//       // Collect login name from response
+//       // console.log(body);
+//       var channel_detail = JSON.parse(body);
+//       console.log(channel_detail);
+//       channel_name = channel_detail[0];
+//       console.log(channel_name);
+//       setGlobalChannelName(channel_name);
+
+//       // return calculated sentiment to previous function
+//   });
+// }
+
 // Collect form with channel name and send post request to /collect_channel_name view
+// It then hides the form
 function startLogging() {
     var streamer_id = document.getElementById("streamerID").value;
+    var form_id = document.getElementById("formDiv");
     console.log("streamer_id", streamer_id);
-    setGlobalChannelId(streamer_id);
+    setGlobalChannelName(streamer_id);
     $.ajax({
         type: "POST",
         url: "/collect_channel_name",
-        contentType: 'application/json',
+        contentType: "application/json",
         data: JSON.stringify({ channel_Id: streamer_id}),
         success: function(data) {
-          console.log('message', data.message);
+          console.log('message sent', data);
         },
         error: function(jqXHR, textStatus, err) {
             alert('text status '+textStatus+', err '+err)
         }
-    });   
-}
+    }); 
+    form_id.style.display='none';
+    startWorker()
+}   
+
+// Collect form with channel name and send post request to /collect_channel_name view
+// It then hides the form
+function ignoreForm() {
+    var form_id = document.getElementById("formDiv");
+    form_id.style.display='none';
+    startWorker()
+}   
     
-
 // Worker that checks the sentiment of comments every 5 seconds
-(function worker() {
-    var channel_id = getGlobalChannelId();
-        $.ajax({
-            type: "POST",
-            url: "/collect_chat_analysis",
-            contentType: 'application/json',
-            data: JSON.stringify({ channel_Id: channel_id}),
-            success: function(data) {
-            // on success write somethibg to HTML
-            // { "average_sentiment": 0.27 }
-                var average_sentiment = data.average_sentiment;
-                if (average_sentiment > 0.048){
-                    var mood = "Awesome!!";
-                    var img = document.createElement("IMG");
-                    img.src = "images/awesome.gif";
-                    
-                }
-                else if (average_sentiment > 0.01 && average_sentiment < 0.048 ){
-                    mood = "Positive";
-                    img = document.createElement("IMG");
-                    img.src = "images/happy.gif";
-                    
-                }
-                else if (average_sentiment > -0.01 && average_sentiment< 0.01){
-                    mood = "Neutral";
-                    img = document.createElement("IMG");
-                    img.src = "images/neutral.gif";
-                    
-                }
-                else if (average_sentiment < -0.01 && average_sentiment > -0.031){
-                    mood = "Miffed";
-                    img = document.createElement("IMG");
-                    img.src = "images/miffed.gif";
-                    
-                }
-                else if (average_sentiment <  -0.031 && average_sentiment > -1){
-                    mood = "Bad";
-                    img = document.createElement("IMG");
-                    img.src = "images/bad.gif"; 
-                }
-                else{
-                    mood = "Error"+ average_sentiment ;
-                }
-                var div = document.querySelector("#viewer_sentiment");
-                div.innerHTML = "Your chat room is feeling "+ mood;
+function startWorker(){
 
-                var image_div = document.querySelector("#imageDiv1");
-                image_div.innerHTML ='<img id="sentiment_image" src=' + img.src + '  class="img-thumbnail"></img>';
-                // document.getElementById('imageDiv').style.backgroundImage = img.src;
-            },
-            complete: function() {
-                    // Schedule the next request when the current one's complete
-                    setTimeout(worker, 5000);
-                }
-        });
-})();
+    (function worker() {
+        var channel_id = getGlobalChannelName();
+        console.log("channel_id", channel_id);
+            $.ajax({
+                type: "POST",
+                url: "/collect_chat_analysis",
+                contentType: 'application/json',
+                data: JSON.stringify({ channel_Id: channel_id}),
+                success: function(data) {
+                // on success write somethibg to HTML
+                // { "average_sentiment": 0.27 }
+                    var average_sentiment = data.average_sentiment;
+                    if (average_sentiment > 0.048){
+                        var mood = "Awesome!!";
+                        var img = document.createElement("IMG");
+                        img.src = "images/awesome.gif";
+                        
+                    }
+                    else if (average_sentiment > 0.024 && average_sentiment < 0.048 ){
+                        mood = "Positive";
+                        img = document.createElement("IMG");
+                        img.src = "images/happy.gif";
+                        
+                    }
+                    else if (average_sentiment > -0.01 && average_sentiment< 0.024){
+                        mood = "Neutral";
+                        img = document.createElement("IMG");
+                        img.src = "images/neutral.gif";
+                        
+                    }
+                    else if (average_sentiment < -0.01 && average_sentiment > -0.031){
+                        mood = "Miffed";
+                        img = document.createElement("IMG");
+                        img.src = "images/miffed.gif";
+                        
+                    }
+                    else if (average_sentiment <  -0.031 && average_sentiment > -1){
+                        mood = "Bad";
+                        img = document.createElement("IMG");
+                        img.src = "images/bad.gif"; 
+                    }
+                    else{
+                        mood = "Error"+ average_sentiment ;
+                    }
+                    var div = document.querySelector("#viewer_sentiment");
+                    div.innerHTML = "Your chat room is feeling "+ mood;
+    
+                    var image_div = document.querySelector("#imageDiv1");
+                    image_div.innerHTML ='<img id="sentiment_image" src=' + img.src + '  class="img-thumbnail"></img>';
+                    // document.getElementById('imageDiv').style.backgroundImage = img.src;
+                },
+                complete: function() {
+                        // Schedule the next request when the current one's complete
+                        setTimeout(worker, 10000);
+                    }
+            });
+    })();
+}
+
+
 
 
 // Collect streamers channelId from twitch and send to backend where it 
