@@ -1,6 +1,3 @@
-set_env.ps1
-certs/server.crt
-certs/server.key
 frontend/viewer.html
 frontend/live.html
 frontend/config.html
