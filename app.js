@@ -112,7 +112,7 @@ var enforceHttps = (req, res, next) => {
 
 if (process.env.NODE_ENV == 'production') {
   // Uncomment the line below to enforce HTTPS in production on Heroku
-  app.use(enforceHttps);
+  // app.use(enforceHttps);
   console.log("We are in production!!!");
 } else {
   app.locals.pretty = true;
