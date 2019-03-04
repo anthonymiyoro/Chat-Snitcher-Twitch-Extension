@@ -163,14 +163,15 @@ document.getElementById("startLogging()").addEventListener("click", function(){
     setGlobalChannelName(streamer_id);
     $.ajax({
         type: "POST",
-        url: "/collect_channel_name",
+        url: "https://localhost:9999/collect_channel_name",
         contentType: "application/json",
         data: JSON.stringify({ channel_Id: streamer_id}),
         success: function(data) {
         //   console.log('message sent', data);
         },
         error: function(jqXHR, textStatus, err) {
-            alert('text status '+textStatus+', err '+err)
+            // alert();
+            console.log('text status '+textStatus+', err '+err);
         }
     }); 
     form_id.style.display='none';
@@ -184,7 +185,8 @@ document.getElementById("ignoreForm()").addEventListener("click", function(){
     form_id.style.display='none';
     startWorker()
   });
-     
+
+
 // Worker that checks the sentiment of comments every 5 seconds
 function startWorker(){
 
@@ -193,7 +195,7 @@ function startWorker(){
         // console.log("channel_id", channel_id);
             $.ajax({
                 type: "POST",
-                url: "/collect_chat_analysis",
+                url: "https://localhost:9999/collect_chat_analysis",
                 contentType: 'application/json',
                 data: JSON.stringify({ channel_Id: channel_id}),
                 success: function(data) {
@@ -258,7 +260,7 @@ function stopLogging(auth){
     var channel_id = auth.channelId.toString()
     $.ajax({
         type: "POST",
-        url: "/collect_channel_name",
+        url: "https://localhost:9999/collect_channel_name",
         contentType: 'application/json',
         data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {
