@@ -30,7 +30,8 @@ let options = {
  cert : fs.readFileSync('certs/server.crt')
 };
 
-var server = https.createServer(options, app);
+// var server = https.createServer(options, app);
+var server = http.createServer(app);
 
 // TWITCH SOCKETS
 var ext_sockets = require('../custom_modules/extension_sockets');
