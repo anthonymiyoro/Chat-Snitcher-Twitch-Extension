@@ -114,6 +114,7 @@ if (process.env.NODE_ENV == 'production') {
 } else {
   app.locals.pretty = true;
   app.use((req, res, next) => {
+    console.log("We are not in production!!!")
     // In dev mode every page load will re-render the frontend
     // index.renderFrontend();
     next();
