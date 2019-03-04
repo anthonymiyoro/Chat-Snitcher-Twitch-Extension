@@ -10,7 +10,6 @@ const ext_sockets = require('../custom_modules/extension_sockets');
 const mw = require('./middleware');
 
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Twitch Extension template'});
