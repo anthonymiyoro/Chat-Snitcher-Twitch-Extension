@@ -161,6 +161,22 @@ app.post('/collect_channel_name', function(req, res){
   startLogging(channel_name);
 });
 
+//  View that starts logging a channels chat
+app.use('/collect_channel_name', function(req, res){
+  console.log("Colect channel name!")
+  console.log(req.body);
+  var request_body = (req.body); // { channel_Id: 'ninja' }
+  // collect channe_id from json request
+  var channel_name = request_body.channel_Id;
+
+  // console.log(channel_id);
+  // always send a response:
+  res.json({ ok: true });
+  // Start logging the streamers channel
+  startLogging(channel_name);
+});
+
+
 // send post request to server to start logging process
 function startLogging(channel_name){
   var options = {
@@ -210,6 +226,26 @@ app.post('/collect_chat_analysis', function(req, res){
   res.status(200).json({ "average_sentiment": average_sentiment });
 
 });
+
+//   View that posts average sentiment and timestamp to frontend
+app.use('/collect_chat_analysis', function(req, res){
+  console.log("Collect chat analysis!!");
+  console.log(req, res);
+  var request_body = (req.body); // { channel_Id: 'ninja' }
+  // collect channel_id from json request, get anlysis and send to frontend JS
+
+  var channel_id = request_body.channel_Id;
+  console.log("channel_id_collected", channel_id);
+  collectAnalysis(channel_id); 
+
+  // Collect avergae sentiment from global variable after getStreamerNameAnalysis
+    // is done 
+  var average_sentiment = readGlobalSentiment();
+  console.log("average sent", average_sentiment);
+  res.status(200).json({ "average_sentiment": average_sentiment });
+
+});
+
 
 //  // get streamer name so we can start logging the chat
 // function getStreamerNameLogging(channel_id) {
