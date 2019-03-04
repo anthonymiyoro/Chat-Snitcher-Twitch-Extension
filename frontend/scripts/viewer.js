@@ -4,7 +4,7 @@
 $(function() {
 
     // Socket connection to EBS
-    var socket = io('https://aqueous-stream-62571.herokuapp.com/', {
+    var socket = io('https://chat-snitcher-ebs.herokuapp.com/', {
         autoConnect: false
     });
 
@@ -163,7 +163,7 @@ document.getElementById("startLogging()").addEventListener("click", function(){
     setGlobalChannelName(streamer_id);
     $.ajax({
         type: "POST",
-        url: " https://aqueous-stream-62571.herokuapp.com/collect_channel_name",
+        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
         contentType: "application/json",
         data: JSON.stringify({ channel_Id: streamer_id}),
         success: function(data) {
@@ -195,7 +195,7 @@ function startWorker(){
         // console.log("channel_id", channel_id);
             $.ajax({
                 type: "POST",
-                url: "https://aqueous-stream-62571.herokuapp.com/collect_chat_analysis",
+                url: "https://chat-snitcher-ebs.herokuapp.com/collect_chat_analysis",
                 contentType: 'application/json',
                 data: JSON.stringify({ channel_Id: channel_id}),
                 success: function(data) {
@@ -260,7 +260,7 @@ function stopLogging(auth){
     var channel_id = auth.channelId.toString()
     $.ajax({
         type: "POST",
-        url: "https://aqueous-stream-62571.herokuapp.com/collect_channel_name",
+        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
         contentType: 'application/json',
         data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {
