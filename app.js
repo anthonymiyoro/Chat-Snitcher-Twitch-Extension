@@ -83,6 +83,8 @@ wins.configure({
 
 // Terminate on unhandle Promise rejections
 process.on('unhandledRejection', e => {
+  console.log('unhandledRejection');
+  console.log(e);
   wins.error("UNHANDLED PROMISE EXCEPTION");
   wins.error(e);
   process.exit(1);
@@ -111,11 +113,11 @@ var enforceHttps = (req, res, next) => {
 if (process.env.NODE_ENV == 'production') {
   // Uncomment the line below to enforce HTTPS in production on Heroku
   app.use(enforceHttps);
-  console.log("We are in production!!!")
+  console.log("We are in production!!!");
 } else {
   app.locals.pretty = true;
   app.use((req, res, next) => {
-    console.log("We are not in production!!!")
+    console.log("We are not in production!!!");
     // In dev mode every page load will re-render the frontend
     // index.renderFrontend();
     next();
@@ -146,7 +148,8 @@ app.use(bodyParser.json());
 
 //  View that starts logging a channels chat
 app.post('/collect_channel_name', function(req, res){
-  // console.log(req.body);
+  console.log("Colect channel name!")
+  console.log(req.body);
   var request_body = (req.body); // { channel_Id: 'ninja' }
   // collect channe_id from json request
   var channel_name = request_body.channel_Id;
@@ -191,6 +194,8 @@ function startLogging(channel_name){
 
 //   View that posts average sentiment and timestamp to frontend
 app.post('/collect_chat_analysis', function(req, res){
+  console.log("Collect chat analysis!!");
+  console.log(req, res);
   var request_body = (req.body); // { channel_Id: 'ninja' }
   // collect channel_id from json request, get anlysis and send to frontend JS
 
