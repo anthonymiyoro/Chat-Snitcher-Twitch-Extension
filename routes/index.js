@@ -4,11 +4,15 @@ const wins = require('winston');
 var app = express();
 var http = require('http');
 var server = http.createServer(app);
+var sslRedirect = require('heroku-ssl-redirect');
 
 const twitch = require('../custom_modules/twitch');
 const ext_sockets = require('../custom_modules/extension_sockets');
 const mw = require('./middleware');
 
+
+// enable ssl redirect
+app.use(sslRedirect());
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

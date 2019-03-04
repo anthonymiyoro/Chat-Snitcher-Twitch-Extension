@@ -12,6 +12,7 @@
     "express": "^4.16.3",
     "express-async-errors": "^3.0.0",
     "fast-safe-stringify": "^2.0.6",
+    "heroku-ssl-redirect": "git://github.com/paulomcnally/node-heroku-ssl-redirect.git#express3x",
     "jsonwebtoken": "^8.3.0",
     "morgan": "~1.9.0",
     "pug": "2.0.0-beta11",
