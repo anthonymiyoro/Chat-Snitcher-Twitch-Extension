@@ -155,7 +155,8 @@ var getGlobalChannelName = (function(global) {
 
 // Collect form with channel name and send post request to /collect_channel_name view
 // It then hides the form
-function startLogging() {
+
+document.getElementById("startLogging()").addEventListener("click", function(){
     var streamer_id = document.getElementById("streamerID").value;
     var form_id = document.getElementById("formDiv");
     console.log("streamer_id", streamer_id);
@@ -174,16 +175,16 @@ function startLogging() {
     }); 
     form_id.style.display='none';
     startWorker()
-}   
+  });  
 
 // Collect form with channel name and send post request to /collect_channel_name view
 // It then hides the form
-function ignoreForm() {
+document.getElementById("ignoreForm()").addEventListener("click", function(){
     var form_id = document.getElementById("formDiv");
     form_id.style.display='none';
     startWorker()
-}   
-    
+  });
+     
 // Worker that checks the sentiment of comments every 5 seconds
 function startWorker(){
 
