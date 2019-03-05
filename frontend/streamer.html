@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+            <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+            <link rel="stylesheet" href="stylesheets/shared.css">
+            <link rel="stylesheet" href="stylesheets/libs/bootstrap-grid.css">
+            <!-- <link rel="stylesheet" href="stylesheets/libs/bootstrap-grid.css.map"> -->
+            <link rel="stylesheet" href="stylesheets/libs/bootstrap-reboot.css">
+            <link rel="stylesheet" href="stylesheets/libs/bootstrap.css">
+            <link rel="stylesheet" href="stylesheets/libs/bootstrap.css.map">
+            <!-- <link rel="stylesheet" href="stylesheets/libs/bootstrap-reboot.css.map"> -->
+        </head>
+
+        <body>
+            <div class="container">
+                <!-- hidden div that asks for stremer name to start collecting chat -->
+                <div id="formDiv" class="row" style="padding:5px;" class="text-center">
+                        <p class="text-center"> If you are the streamer enter this channels' streamerID which can be 
+                            found after https://www.twitch.tv/ . If not, click ignore.
+                        </p>  
+
+                        <form id="startLoggingForm" method="post">
+                            Streamer ID: <input type="text" id="streamerID"><br>
+                            <input type="button" id="startLogging()" value="Submit">
+                            <input type="button" id="ignoreForm()" value="Ignore">
+                        </form>                           
+                </div>
+
+                <!-- div with text of sentimet of sentiment -->
+                <div class="row" style="padding:5px;" class="text-center">
+                        <p id="viewer_sentiment" class="text-center"></p>   
+                </div>
+
+                <!-- div with image of sentiment -->
+                <div class="row"> 
+                        <div id ="imageDiv1" style="padding:10px;" >
+                        </div> 
+                </div>
+            </div>
+        </body>
+        <footer>
+                <script type="text/javascript" src="scripts/libs/jquery-3.3.1.js"></script>
+                <script type="text/javascript" src="scripts/libs/socket.io.2.0.4.js"></script>
+                <script type="text/javascript" src="scripts/libs/bootstrap.bundle.js"></script>
+                <!-- <script type="text/javascript" src="scripts/libs/bootstrap.bundle.js.map"></script> -->
+                <script type="text/javascript" src="scripts/libs/bootstrap.js"></script>
+                <!-- <script type="text/javascript" src="scripts/libs/bootstrap.js.map"></script> -->
+                <script src="scripts/viewer.js"></script>
+        </footer>
+    </html>

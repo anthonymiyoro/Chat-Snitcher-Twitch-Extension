@@ -34,19 +34,21 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [x] Run above functin every 15 seconds
 
-- [ ] Host the damn thing
+- [x] Host the damn thing
 
-- [ ] Fix issues with get request
+- [x] Fix issues with get request
 
-- [ ] Host on heroku
+- [x] Host on heroku
 
-- [ ] Install https
+- [x] Install https
 
 - [ ] Create logo and start screen
 
 - [ ] Take screenshots
 
 - [ ] Improve rating algorithm
+
+- [ ] Create config html page
 
 
 
