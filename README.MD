@@ -44,11 +44,17 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Create logo and start screen
 
-- [ ] Take screenshots
+- [x] Take screenshots
 
 - [ ] Improve rating algorithm
 
-- [ ] Create config html page
+- [x] Create config html page
+
+- [ ] Add total number of positive posts
+
+- [ ] Add total number of negative posts
+
+- [ ] Add total number of neutral posts
 
 
 

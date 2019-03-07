@@ -13,11 +13,8 @@ let mw = require('./routes/middleware');
 
 // Global variables will be used in functions
 var log_task_id;
-var channel_name;
 
-// Deal with global variables
-
-// global average sentiment variable
+// GLOBAL AVERAGE SETTER AND GETTER
 var setGlobalSentiment = (function(global) {
   return function(value) {
     global.average_sentiment = value;
@@ -28,10 +25,9 @@ var readGlobalSentiment = (function(global) {
     return global.average_sentiment;
   }
 }(this));
-
-// initialise global sentiment score
 setGlobalSentiment(0);
 
+// GLOBAL TOTAL SENTIMENT COUNT SETTER AND GETTER
 var setGlobalSentCount = (function(global) {
   return function(value) {
     global.sentiment_count = value;
@@ -42,9 +38,49 @@ var readGlobalSentCount = (function(global) {
     return global.sentiment_count;
   }
 }(this));
-
-// Initialise sentiment count
 setGlobalSentCount(0);
+
+// GLOBAL NEGATIVE SENTIMENT COUNT SETTER AND GETTER
+var setGlobalNegativeSentCount = (function(global) {
+  return function(value) {
+    global.negative_sentiment_count = value;
+  }
+}(this));
+var readGlobalNegativeSentCount = (function(global) {
+  return function() {
+    return global.negative_sentiment_count;
+  }
+}(this));
+setGlobalNegativeSentCount(0);
+
+// GLOBAL POSITIVE SENTIMENT COUNT SETTER AND GETTER
+var setGlobalPositiveSentCount = (function(global) {
+  return function(value) {
+    global.positive_sentiment_count = value;
+  }
+}(this));
+var readGlobalPositiveSentCount = (function(global) {
+  return function() {
+    return global.positive_sentiment_count;
+  }
+}(this));
+setGlobalPositiveSentCount(0);
+
+// GLOBAL NEUTRAL SENTIMENT COUNT SETTER AND GETTER
+var setGlobalNeutralSentCount = (function(global) {
+  return function(value) {
+    global.neutral_sentiment_count = value;
+  }
+}(this));
+var readGlobalNeutralSentCount = (function(global) {
+  return function() {
+    return global.neutral_sentiment_count;
+  }
+}(this));
+setGlobalNeutralSentCount(0);
+
+
+
 
 
 // Set up the winston logger
@@ -205,8 +241,16 @@ app.use('/collect_chat_analysis', function(req, res){
   // Collect avergae sentiment from global variable after getStreamerNameAnalysis
     // is done 
   var average_sentiment = readGlobalSentiment();
-  console.log("average sent", average_sentiment);
-  res.status(200).json({ "average_sentiment": average_sentiment });
+  var positive_sentiment_count = readGlobalPositiveSentCount();
+  var negative_sentiment_count = readGlobalNegativeSentCount();
+  var neutral_sentiment_count = readGlobalNeutralSentCount();
+  var total_sentiment_count = readGlobalSentCount();
+
+  var positive_sentiment_percentage =  (positive_sentiment_count/total_sentiment_count)*100;
+  var negative_sentiment_percentage =  (negative_sentiment_count/total_sentiment_count)*100;
+  var neutral_sentiment_percentage =  (neutral_sentiment_count/total_sentiment_count)*100;
+
+  res.status(200).json({ "average_sentiment": average_sentiment, "positive_sentiment_percentage":positive_sentiment_percentage, "negative_sentiment_percentage":negative_sentiment_percentage, "neutral_sentiment_percentage":neutral_sentiment_percentage });
 
 });
 
@@ -279,22 +323,46 @@ function collectAnalysis(streamer_name){
         request_body.forEach(function (arrayItem) {
         // Collect individual JSON objects
         var comment = arrayItem;
-        // console.log(comment);
         // Loop through each JSON Object and collect score
         for (var key in comment) {
           if (comment.hasOwnProperty(key) &&  key === "sentiment_score") {
-              var score = comment[key];
-              var sentiment_count = readGlobalSentCount();
-              sentiment_count = sentiment_count + 1;
-              setGlobalSentCount(sentiment_count);
 
-              var average_sentiment = readGlobalSentiment();
-              average_sentiment = (average_sentiment + score)/sentiment_count;
-              console.log("Calculated average sentiment");
-              console.log(average_sentiment);
+            // read global variables
+            var total_sentiment_count = readGlobalSentCount();
+            var negative_sentiment_count = readGlobalNegativeSentCount();
+            var positive_sentiment_count = readGlobalPositiveSentCount();
+            var neutral_sentiment_count = readGlobalNeutralSentCount();
 
-              // put average sentiment in global variable
-              setGlobalSentiment(average_sentiment);
+            var score = comment[key];
+
+            // Increment score counts
+            if (score>=0.05){
+              positive_sentiment_count = positive_sentiment_count + 1;
+              setGlobalPositiveSentCount(positive_sentiment_count);
+            }
+            else if (score > -0.05 && score < 0.05){
+              neutral_sentiment_count = neutral_sentiment_count + 1;
+              setGlobalNeutralSentCount(neutral_sentiment_count);
+            }
+            else if (score <= -0.05){
+              negative_sentiment_count = negative_sentiment_count + 1;
+              setGlobalNegativeSentCount(negative_sentiment_count);
+            }
+
+            // Increment total sentiment count by 1
+            total_sentiment_count = total_sentiment_count + 1;
+            setGlobalSentCount(total_sentiment_count);
+
+            // calculate statistical mean of sentiment scores
+            // Calculate new average of every score
+            // ((4th value mean * 4)+5th value)/5
+            var average_sentiment = readGlobalSentiment();
+            average_sentiment = ((average_sentiment * (total_sentiment_count-1))+score)/total_sentiment_count;
+            console.log("Calculated average sentiment");
+            console.log(average_sentiment);
+
+            // update average sentiment
+            setGlobalSentiment(average_sentiment);
           }
         }
       });

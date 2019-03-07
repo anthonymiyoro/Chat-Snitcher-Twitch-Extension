@@ -207,31 +207,31 @@ function startWorker(){
                 // on success write somethibg to HTML
                 // { "average_sentiment": 0.27 }
                     var average_sentiment = data.average_sentiment;
-                    if (average_sentiment > 0.048){
+                    if (average_sentiment > 0.080){
                         var mood = "Awesome!!";
                         var img = document.createElement("IMG");
                         img.src = "images/awesome.gif";
                         
                     }
-                    else if (average_sentiment > 0.024 && average_sentiment < 0.048 ){
+                    else if (average_sentiment >= 0.048 && average_sentiment <= 0.080 ){
                         mood = "Positive";
                         img = document.createElement("IMG");
                         img.src = "images/happy.gif";
                         
                     }
-                    else if (average_sentiment > -0.019 && average_sentiment< 0.024){
+                    else if (average_sentiment > -0.048 && average_sentiment< 0.048){
                         mood = "Neutral";
                         img = document.createElement("IMG");
                         img.src = "images/neutral.gif";
                         
                     }
-                    else if (average_sentiment < -0.020 && average_sentiment > -0.031){
+                    else if (average_sentiment < -0.048 && average_sentiment > -0.084){
                         mood = "Miffed";
                         img = document.createElement("IMG");
                         img.src = "images/miffed.gif";
                         
                     }
-                    else if (average_sentiment <  -0.031 && average_sentiment > -1){
+                    else if (average_sentiment < -0.084){
                         mood = "Bad";
                         img = document.createElement("IMG");
                         img.src = "images/bad.gif"; 
