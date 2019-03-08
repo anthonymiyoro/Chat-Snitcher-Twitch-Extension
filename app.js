@@ -11,7 +11,7 @@ var request = require("request");
 
 let mw = require('./routes/middleware');
 
-// Global variables will be used in functions
+// Replace with setter and getter!!!!
 var log_task_id;
 
 // GLOBAL AVERAGE SETTER AND GETTER
@@ -249,6 +249,12 @@ app.use('/collect_chat_analysis', function(req, res){
   var positive_sentiment_percentage =  (positive_sentiment_count/total_sentiment_count)*100;
   var negative_sentiment_percentage =  (negative_sentiment_count/total_sentiment_count)*100;
   var neutral_sentiment_percentage =  (neutral_sentiment_count/total_sentiment_count)*100;
+
+  console.log("pos", positive_sentiment_count, positive_sentiment_percentage);
+  console.log("neg", negative_sentiment_count, negative_sentiment_percentage);
+  console.log("neu", neutral_sentiment_count, neutral_sentiment_percentage);
+
+  // console.log("average_sentiment:", average_sentiment, "positive_sentiment_percentage":positive_sentiment_percentage, "negative_sentiment_percentage":negative_sentiment_percentage, "neutral_sentiment_percentage":neutral_sentiment_percentage);
 
   res.status(200).json({ "average_sentiment": average_sentiment, "positive_sentiment_percentage":positive_sentiment_percentage, "negative_sentiment_percentage":negative_sentiment_percentage, "neutral_sentiment_percentage":neutral_sentiment_percentage });
 

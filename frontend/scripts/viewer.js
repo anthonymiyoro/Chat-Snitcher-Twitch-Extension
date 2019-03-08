@@ -161,7 +161,7 @@ document.getElementById("startLogging()").addEventListener("click", function(){
     setGlobalChannelName(streamer_id);
     $.ajax({
         type: "POST",
-        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
+        url: "/collect_channel_name",
         contentType: "application/json",
         data: JSON.stringify({ channel_Id: streamer_id}),
         success: function(data) {
@@ -200,38 +200,45 @@ function startWorker(){
         // console.log("channel_id", channel_id);
             $.ajax({
                 type: "POST",
-                url: "https://chat-snitcher-ebs.herokuapp.com/collect_chat_analysis",
+                url: "/collect_chat_analysis",
                 contentType: 'application/json',
                 data: JSON.stringify({ channel_Id: channel_id}),
                 success: function(data) {
                 // on success write somethibg to HTML
-                // { "average_sentiment": 0.27 }
+                // { "average_sentiment": 0.27, "positive_sentiment_percentage":24, .... }
                     var average_sentiment = data.average_sentiment;
-                    if (average_sentiment > 0.080){
+                    var positive_sentiment_percentage = data.positive_sentiment_percentage;
+                    var negative_sentiment_percentage = data.negative_sentiment_percentage;
+                    var neutral_sentiment_percentage = data.neutral_sentiment_percentage;
+
+                    console.log("average sentiment", average_sentiment);
+                    console.log("sentiment percentages, neg, positive, neutra;", negative_sentiment_percentage, positive_sentiment_percentage, neutral_sentiment_percentage);
+
+                    if (average_sentiment > 0.80){
                         var mood = "Awesome!!";
                         var img = document.createElement("IMG");
                         img.src = "images/awesome.gif";
                         
                     }
-                    else if (average_sentiment >= 0.048 && average_sentiment <= 0.080 ){
+                    else if (average_sentiment >= 0.48 && average_sentiment <= 0.80 ){
                         mood = "Positive";
                         img = document.createElement("IMG");
                         img.src = "images/happy.gif";
                         
                     }
-                    else if (average_sentiment > -0.048 && average_sentiment< 0.048){
+                    else if (average_sentiment > -0.48 && average_sentiment< 0.48){
                         mood = "Neutral";
                         img = document.createElement("IMG");
                         img.src = "images/neutral.gif";
                         
                     }
-                    else if (average_sentiment < -0.048 && average_sentiment > -0.084){
+                    else if (average_sentiment < -0.48 && average_sentiment > -0.84){
                         mood = "Miffed";
                         img = document.createElement("IMG");
                         img.src = "images/miffed.gif";
                         
                     }
-                    else if (average_sentiment < -0.084){
+                    else if (average_sentiment < -0.84){
                         mood = "Bad";
                         img = document.createElement("IMG");
                         img.src = "images/bad.gif"; 
@@ -239,15 +246,22 @@ function startWorker(){
                     else{
                         mood = "Error"+ average_sentiment ;
                     }
+                    // assign values to divs
                     var div = document.querySelector("#viewer_sentiment");
-                    div.innerHTML = "Your chat room is feeling "+ mood;
+                    var pos_div = document.querySelector("#pos_percentage");
+                    var neut_div = document.querySelector("#neut_percentage");
+                    var neg_div = document.querySelector("#neg_percentage");
+                    div.innerHTML = "Your chat room is feeling <mark>"+ mood + "</mark>";
+                    pos_div.innerHTML = "Positive " + positive_sentiment_percentage + "%";
+                    neg_div.innerHTML = "Negative " + negative_sentiment_percentage + "%";
+                    neut_div.innerHTML = "Neutral " + neutral_sentiment_percentage + "%";
     
                     var image_div = document.querySelector("#imageDiv1");
                     image_div.innerHTML ='<img id="sentiment_image" src=' + img.src + '  class="img-thumbnail"></img>';
                     // document.getElementById('imageDiv').style.backgroundImage = img.src;
                 },
                 complete: function() {
-                        // Schedule the next request when the current one's complete
+                        // run every 10 seconds
                         setTimeout(worker, 10000);
                     }
             });
@@ -258,14 +272,14 @@ function startWorker(){
 
 
 // Collect streamers channelId from twitch and send to backend where it 
-// will be converted to the streamer name. From backend analyssi of chat room 
+// will be converted to the streamer name. From backend analysis of chat room 
 // will stop.
 
 function stopLogging(auth){
     var channel_id = auth.channelId.toString()
     $.ajax({
         type: "POST",
-        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
+        url: "/collect_channel_name",
         contentType: 'application/json',
         data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {

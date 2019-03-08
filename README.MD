@@ -56,6 +56,7 @@ given channels name twitch chat. After 5 seconds, another POST request is sent, 
 
 - [ ] Add total number of neutral posts
 
+- [ ] Clean form input
 
 
 
