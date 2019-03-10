@@ -168,7 +168,7 @@ function collectChannelName(channel_Id){
       
     $.ajax(settings).done(function (response) {
         // if (error) throw new Error(error);
-        console.log("This is the get request response.", response);
+        // console.log("This is the get request response.", response);
         var channel_detail = response.data;
         var channel_name = channel_detail[0].login
         setGlobalChannelName(channel_name);
@@ -234,34 +234,34 @@ function startWorker(){
                     var negative_sentiment_percentage = data.negative_sentiment_percentage;
                     var neutral_sentiment_percentage = data.neutral_sentiment_percentage;
 
-                    console.log("average sentiment", average_sentiment);
-                    console.log("sentiment percentages, neg, positive, neutra;", negative_sentiment_percentage, positive_sentiment_percentage, neutral_sentiment_percentage);
+                    // console.log("average sentiment", average_sentiment);
+                    // console.log("sentiment percentages, neg, positive, neutra;", negative_sentiment_percentage, positive_sentiment_percentage, neutral_sentiment_percentage);
 
-                    if (average_sentiment > 0.80){
+                    if (average_sentiment > 0.60){
                         var mood = "Awesome!!";
                         var img = document.createElement("IMG");
                         img.src = "images/awesome.gif";
                         
                     }
-                    else if (average_sentiment >= 0.48 && average_sentiment <= 0.80 ){
+                    else if (average_sentiment >= 0.23 && average_sentiment <= 0.60 ){
                         mood = "Positive";
                         img = document.createElement("IMG");
                         img.src = "images/happy.gif";
                         
                     }
-                    else if (average_sentiment > -0.48 && average_sentiment< 0.48){
+                    else if (average_sentiment > -0.38 && average_sentiment< 0.22){
                         mood = "Neutral";
                         img = document.createElement("IMG");
                         img.src = "images/neutral.gif";
                         
                     }
-                    else if (average_sentiment < -0.48 && average_sentiment > -0.84){
+                    else if (average_sentiment <= -0.38 && average_sentiment >= -0.64){
                         mood = "Miffed";
                         img = document.createElement("IMG");
                         img.src = "images/miffed.gif";
                         
                     }
-                    else if (average_sentiment < -0.84){
+                    else if (average_sentiment < -0.64){
                         mood = "Bad";
                         img = document.createElement("IMG");
                         img.src = "images/bad.gif"; 
