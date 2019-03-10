@@ -71,9 +71,10 @@ $(function() {
         // console.log("My Twitch opaque user id is", auth.userId);
         // console.log("The JWT token is", auth.token);
 
-        // var channel_Id = auth.channelId.toString();
+        var channel_Id = auth.channelId.toString();
         // console.log("Channel ID Below")
         // console.log(channel_Id)
+        collectChannelName(channel_Id)
 
         latestAuth = auth;
         // Set up the header for requests
@@ -94,7 +95,7 @@ $(function() {
             // Open the websocket
             socket.open();
         }
-       
+        
     });
 
     // Sub all viewers to the broadcast channel
@@ -151,19 +152,40 @@ var getGlobalChannelName = (function(global) {
 //   });
 // }
 
-// Collect form with channel name and send post request to /collect_channel_name view
-// It then hides the form
+function collectChannelName(channel_Id){
+    var channel_id = channel_Id;
+    var get_url = "https://api.twitch.tv/helix/users?id=" + channel_id;
 
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": get_url,
+        "method": "GET",
+        "headers": {
+          "Client-ID": "s72s2j2mm94920a4hk4921e5vc67ks",
+        }
+      }
+      
+    $.ajax(settings).done(function (response) {
+        // if (error) throw new Error(error);
+        console.log("This is the get request response.", response);
+        var channel_detail = response.data;
+        var channel_name = channel_detail[0].login
+        setGlobalChannelName(channel_name);
+    });
+
+}
+
+// Start logging channel only if this is the streamer
 document.getElementById("startLogging()").addEventListener("click", function(){
-    var streamer_id = document.getElementById("streamerID").value;
     var form_id = document.getElementById("formDiv");
-    // console.log("streamer_id", streamer_id);
-    setGlobalChannelName(streamer_id);
+    var channel_name = getGlobalChannelName();
+
     $.ajax({
         type: "POST",
         url: "/collect_channel_name",
         contentType: "application/json",
-        data: JSON.stringify({ channel_Id: streamer_id}),
+        data: JSON.stringify({ channel_Id: channel_name}),
         success: function(data) {
         //   console.log('message sent', data);
         },
@@ -176,6 +198,7 @@ document.getElementById("startLogging()").addEventListener("click", function(){
     startWorker()
   });  
 
+  
 // Collect form with channel name and send post request to /collect_channel_name view
 // It then hides the form
 document.getElementById("ignoreForm()").addEventListener("click", function(){
@@ -267,9 +290,6 @@ function startWorker(){
             });
     })();
 }
-
-
-
 
 // Collect streamers channelId from twitch and send to backend where it 
 // will be converted to the streamer name. From backend analysis of chat room 
