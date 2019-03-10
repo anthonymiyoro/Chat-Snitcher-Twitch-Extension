@@ -246,9 +246,9 @@ app.use('/collect_chat_analysis', function(req, res){
   var neutral_sentiment_count = readGlobalNeutralSentCount();
   var total_sentiment_count = readGlobalSentCount();
 
-  var positive_sentiment_percentage =  (positive_sentiment_count/total_sentiment_count)*100;
-  var negative_sentiment_percentage =  (negative_sentiment_count/total_sentiment_count)*100;
-  var neutral_sentiment_percentage =  (neutral_sentiment_count/total_sentiment_count)*100;
+  var positive_sentiment_percentage =  Number(((positive_sentiment_count/total_sentiment_count)*100).toFixed(1));
+  var negative_sentiment_percentage =  Number(((negative_sentiment_count/total_sentiment_count)*100).toFixed(1));
+  var neutral_sentiment_percentage =  Number(((neutral_sentiment_count/total_sentiment_count)*100).toFixed(1));
 
   console.log("pos", positive_sentiment_count, positive_sentiment_percentage);
   console.log("neg", negative_sentiment_count, negative_sentiment_percentage);
