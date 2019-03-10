@@ -183,7 +183,7 @@ document.getElementById("startLogging()").addEventListener("click", function(){
 
     $.ajax({
         type: "POST",
-        url: "/collect_channel_name",
+        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
         contentType: "application/json",
         data: JSON.stringify({ channel_Id: channel_name}),
         success: function(data) {
@@ -223,7 +223,7 @@ function startWorker(){
         // console.log("channel_id", channel_id);
             $.ajax({
                 type: "POST",
-                url: "/collect_chat_analysis",
+                url: "https://chat-snitcher-ebs.herokuapp.com/collect_chat_analysis",
                 contentType: 'application/json',
                 data: JSON.stringify({ channel_Id: channel_id}),
                 success: function(data) {
@@ -299,7 +299,7 @@ function stopLogging(auth){
     var channel_id = auth.channelId.toString()
     $.ajax({
         type: "POST",
-        url: "/collect_channel_name",
+        url: "https://chat-snitcher-ebs.herokuapp.com/collect_channel_name",
         contentType: 'application/json',
         data: JSON.stringify({ channel_Id: channel_id}),
         success: function(data) {
